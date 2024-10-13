@@ -43,8 +43,7 @@ def read_tasks(db):
 @db_session
 def create_task_endpoint(db):
     task_data = request.json
-    db_task = Task(title=task_data["title"], description=task_data["description"])
-    db_task = create_task(db=db, task=db_task)
+    db_task = create_task(db=db, title=task_data["title"], description=task_data["description"])
     return jsonify({"id": db_task.id, "title": db_task.title, "description": db_task.description,
                     "is_completed": db_task.is_completed}), 201
 
