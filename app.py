@@ -10,7 +10,7 @@ app = Flask(__name__)
 Base.metadata.create_all(bind=engine)
 
 
-def use_db_session(route):
+def db_session(route):
     @wraps(route)
     def wrapper(*args, **kwargs):
         db = SessionLocal()
@@ -18,12 +18,13 @@ def use_db_session(route):
             result = route(db, *args, **kwargs)
             return result
         finally:
+            db.commit()
             db.close()
     return wrapper
 
 
 @app.route("/tasks/", methods=["GET"])
-@use_db_session
+@db_session
 def read_tasks(db):
     tasks = get_tasks(db)
     return jsonify(
@@ -39,7 +40,7 @@ def read_tasks(db):
 
 
 @app.route("/add_task/", methods=["POST"])
-@use_db_session
+@db_session
 def create_task_endpoint(db):
     task_data = request.json
     db_task = Task(title=task_data["title"], description=task_data["description"])

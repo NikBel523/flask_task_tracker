@@ -8,6 +8,4 @@ def get_tasks(db: Session):
 
 def create_task(db: Session, task: Task):
     db.add(task)
-    db.commit()
-    db.refresh(task)
     return task
